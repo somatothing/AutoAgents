@@ -8,7 +8,7 @@ license.workspace = true
 axum = "0.8"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 agent-core = { path = "../../crates/agent-core" }
-dl-adapter = { path = "../../crates/dl-adapter" }
+dl-adapter = { path = "../../crates/dl-adapter", features = ["rotta", "burn"] }
 qwen-client = { path = "../../crates/qwen-client" }
 embeddings = { path = "../../crates/embeddings" }
 tools = { path = "../../crates/tools" }
@@ -17,4 +17,5 @@ orchestrator = { path = "../../crates/orchestrator" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 uuid = { version = "1", features = ["v4"] }
+tower-http = { version = "0.5", features = ["fs"] }
 
