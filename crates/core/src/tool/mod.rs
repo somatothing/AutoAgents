@@ -5,6 +5,10 @@ use std::fmt::Debug;
 mod runtime;
 pub use runtime::ToolRuntime;
 
+pub mod rag;
+#[cfg(feature = "mcp")]
+pub mod mcp;
+
 #[cfg(feature = "wasm")]
 pub use runtime::{WasmRuntime, WasmRuntimeError};
 

@@ -10,6 +10,12 @@ use std::any::Any;
 use std::sync::Arc;
 use tokio::sync::{mpsc, RwLock};
 
+#[derive(Debug, Clone)]
+pub struct SubContext {
+    pub name: String,
+    pub notes: Option<String>,
+}
+
 pub struct Context {
     llm: Arc<dyn LLMProvider>,
     messages: Vec<ChatMessage>,
@@ -19,6 +25,8 @@ pub struct Context {
     state: Arc<RwLock<AgentState>>,
     tx: mpsc::Sender<Event>,
     stream: bool,
+    step_counter: u64,
+    sub_contexts: Vec<SubContext>,
 }
 
 impl Context {
@@ -32,6 +40,8 @@ impl Context {
             state: Arc::new(RwLock::new(AgentState::new())),
             stream: false,
             tx,
+            step_counter: 0,
+            sub_contexts: vec![],
         }
     }
 
@@ -71,6 +81,15 @@ impl Context {
         self
     }
 
+    pub fn with_sub_contexts(mut self, sub_contexts: Vec<SubContext>) -> Self {
+        self.sub_contexts = sub_contexts;
+        self
+    }
+
+    pub fn increment_step(&mut self) {
+        self.step_counter = self.step_counter.saturating_add(1);
+    }
+
     // Getters
     pub fn llm(&self) -> Arc<dyn LLMProvider> {
         self.llm.clone()
@@ -102,6 +121,14 @@ impl Context {
 
     pub fn stream(&self) -> bool {
         self.stream
+    }
+
+    pub fn step(&self) -> u64 {
+        self.step_counter
+    }
+
+    pub fn sub_contexts(&self) -> &[SubContext] {
+        &self.sub_contexts
     }
 }
 
