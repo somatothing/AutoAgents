@@ -7,13 +7,14 @@ license.workspace = true
 [features]
 default = []
 rotta = ["dep:rotta_rs"]
-burn = ["dep:burn-core"]
+burn = ["dep:burn-core", "dep:burn-ndarray"]
 
 [dependencies]
 agent-core = { path = "../agent-core" }
 # Local paths to external repos; adjust if vendored differently
 rotta_rs = { path = "/workspace/external/ROTTA-rs", optional = true }
 burn-core = { path = "/workspace/external/burn/crates/burn-core", optional = true }
+burn-ndarray = { path = "/workspace/external/burn/crates/burn-ndarray", optional = true }
 serde = { version = "1", features = ["derive"] }
 thiserror = "1"
 

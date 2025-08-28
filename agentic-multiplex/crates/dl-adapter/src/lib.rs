@@ -4,12 +4,13 @@ use agent_core::Think;
 pub mod rotta_backend {
     use super::*;
     use rotta_rs as rotta;
+    use rotta::Tensor as RTensor;
 
     pub struct RottaThinker;
     impl agent_core::Think for RottaThinker {
         fn think(&self, input: &str) -> Vec<String> {
-            // Placeholder: integrate with rotta_rs tensors/models here
-            vec![format!("rotta step: {}", input)]
+            let t = RTensor::from_element(vec![2, 2], 1.0);
+            vec![format!("rotta step: {} shape={:?}", input, t.value().shape)]
         }
     }
 }
@@ -18,12 +19,17 @@ pub mod rotta_backend {
 pub mod burn_backend {
     use super::*;
     use burn_core as burn;
+    use burn::prelude::*;
 
     pub struct BurnThinker;
     impl agent_core::Think for BurnThinker {
         fn think(&self, input: &str) -> Vec<String> {
-            // Placeholder: integrate with burn_core tensors/models here
-            vec![format!("burn step: {}", input)]
+            type B = burn_ndarray::NdArray<f32>;
+            let device = <B as Backend>::Device::default();
+            let a = Tensor::<B, 2>::zeros([2, 2], &device);
+            let b = Tensor::<B, 2>::ones([2, 2], &device);
+            let c = a + b;
+            vec![format!("burn step: {} sum={}", input, c.sum().into_scalar())]
         }
     }
 }
