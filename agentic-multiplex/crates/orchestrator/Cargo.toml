@@ -1,0 +1,9 @@
+[package]
+name = "orchestrator"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+agent-core = { path = "../agent-core" }
+serde = { version = "1", features = ["derive"] }
