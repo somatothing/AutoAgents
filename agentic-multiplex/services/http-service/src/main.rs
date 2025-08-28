@@ -1,4 +1,5 @@
 use axum::{routing::{get, post}, Router, extract::State, Json};
+use tower_http::{cors::CorsLayer, services::ServeDir, trace::TraceLayer};
 use std::net::SocketAddr;
 use agent_core::{Agent, AgentRequest, AgentResponse, MultiChunkMemory};
 use dl_adapter::{EchoThinker, MultiplexThinker};
@@ -61,8 +62,20 @@ async fn rag_handler(State(state): State<AppState>, Json(q): Json<RagQuery>) -> 
     Json(hits.into_iter().map(|h| h.id).collect())
 }
 
+#[derive(serde::Deserialize)]
+struct BulkIngest { docs: Vec<String> }
+
+async fn bulk_embed_handler(State(state): State<AppState>, Json(body): Json<BulkIngest>) -> Json<usize> {
+    let e = HashingEmbedder::default();
+    for doc in body.docs.iter() {
+        let _ = upsert_text(&state.index, format!("doc:{}", uuid::Uuid::new_v4()), doc, &e);
+    }
+    Json(body.docs.len())
+}
+
 #[tokio::main]
 async fn main() {
+    tracing_subscriber::fmt::init();
     let state = AppState {
         qwen_base_url: std::env::var("QWEN_BASE").unwrap_or_else(|_| "https://api.example.com".into()),
         qwen_api_key: std::env::var("QWEN_KEY").ok(),
@@ -73,10 +86,13 @@ async fn main() {
         .route("/run", post(run_handler))
         .route("/chat", post(chat_handler))
         .route("/embed", post(embed_handler))
+        .route("/embed/bulk", post(bulk_embed_handler))
         .route("/calc", post(calc_handler))
         .route("/tf", post(tf_handler))
         .route("/rag", post(rag_handler))
-        .nest_service("/", tower_http::services::ServeDir::new("ui/public"))
+        .nest_service("/", ServeDir::new("ui/public"))
+        .layer(CorsLayer::permissive())
+        .layer(TraceLayer::new_for_http())
         .with_state(state);
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
     println!("listening on {}", addr);
