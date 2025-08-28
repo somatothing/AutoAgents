@@ -168,6 +168,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "613afe47fcd5fac7ccf1db93babcb082c5994d996f20b8b159f2ad1658eb5724"
 
 [[package]]
+name = "connectors"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "crossbeam-deque"
 version = "0.8.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -357,11 +365,14 @@ dependencies = [
  "axum",
  "dl-adapter",
  "embeddings",
+ "orchestrator",
  "qwen-client",
  "serde",
  "serde_json",
  "tokio",
  "tools",
+ "uuid",
+ "vector-store",
 ]
 
 [[package]]
@@ -701,6 +712,14 @@ name = "once_cell"
 version = "1.21.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
+
+[[package]]
+name = "orchestrator"
+version = "0.1.0"
+dependencies = [
+ "agent-core",
+ "serde",
+]
 
 [[package]]
 name = "percent-encoding"
@@ -1368,6 +1387,15 @@ dependencies = [
  "getrandom 0.3.3",
  "js-sys",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "vector-store"
+version = "0.1.0"
+dependencies = [
+ "embeddings",
+ "serde",
+ "thiserror 1.0.69",
 ]
 
 [[package]]

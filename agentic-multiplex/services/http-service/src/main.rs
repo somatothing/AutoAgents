@@ -63,7 +63,11 @@ async fn rag_handler(State(state): State<AppState>, Json(q): Json<RagQuery>) -> 
 
 #[tokio::main]
 async fn main() {
-    let state = AppState { qwen_base_url: std::env::var("QWEN_BASE").unwrap_or_else(|_| "https://api.example.com".into()), qwen_api_key: std::env::var("QWEN_KEY").ok() };
+    let state = AppState {
+        qwen_base_url: std::env::var("QWEN_BASE").unwrap_or_else(|_| "https://api.example.com".into()),
+        qwen_api_key: std::env::var("QWEN_KEY").ok(),
+        index: InMemoryIndex::new(),
+    };
     let app = Router::new()
         .route("/health", get(|| async { "ok" }))
         .route("/run", post(run_handler))
@@ -71,6 +75,7 @@ async fn main() {
         .route("/embed", post(embed_handler))
         .route("/calc", post(calc_handler))
         .route("/tf", post(tf_handler))
+        .route("/rag", post(rag_handler))
         .with_state(state);
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
     println!("listening on {}", addr);
