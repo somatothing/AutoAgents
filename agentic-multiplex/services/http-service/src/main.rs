@@ -63,6 +63,14 @@ async fn rag_handler(State(state): State<AppState>, Json(q): Json<RagQuery>) -> 
 }
 
 #[derive(serde::Deserialize)]
+struct OrchestrateBody { tasks: Vec<String> }
+
+async fn orchestrate_handler(_state: State<AppState>, Json(body): Json<OrchestrateBody>) -> Json<Vec<String>> {
+    // Placeholder orchestration: return tasks as executed steps
+    Json(body.tasks.into_iter().map(|t| format!("executed: {}", t)).collect())
+}
+
+#[derive(serde::Deserialize)]
 struct BulkIngest { docs: Vec<String> }
 
 async fn bulk_embed_handler(State(state): State<AppState>, Json(body): Json<BulkIngest>) -> Json<usize> {
@@ -90,6 +98,7 @@ async fn main() {
         .route("/calc", post(calc_handler))
         .route("/tf", post(tf_handler))
         .route("/rag", post(rag_handler))
+        .route("/orchestrate", post(orchestrate_handler))
         .nest_service("/", ServeDir::new("ui/public"))
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http())

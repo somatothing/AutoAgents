@@ -5,9 +5,60 @@
   <title>Agentic Multiplex</title>
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <h1>Agentic Multiplex</h1>
+    <section>
+      <h3>/chat</h3>
+      <textarea id="chat-input" rows="3" cols="60">Hello</textarea>
+      <button onclick="chat()">Send</button>
+      <pre id="chat-out"></pre>
+    </section>
+    <section>
+      <h3>/embed and /rag</h3>
+      <textarea id="doc" rows="3" cols="60">Sample document</textarea>
+      <button onclick="embed()">Embed</button>
+      <input id="rag-q" value="Sample" />
+      <button onclick="rag()">RAG Query</button>
+      <pre id="rag-out"></pre>
+    </section>
+    <section>
+      <h3>/run</h3>
+      <input id="run-input" value="Think about X" />
+      <button onclick="runAgent()">Run</button>
+      <pre id="run-out"></pre>
+    </section>
+    <section>
+      <h3>/calc</h3>
+      <input id="calc-expr" value="2+2" />
+      <button onclick="calc()">Calc</button>
+      <pre id="calc-out"></pre>
+    </section>
+  </div>
   <script>
-    document.getElementById('app').innerText = 'Agent UI coming soon';
+    async function chat(){
+      const body = { model: 'qwen-coder', messages: [{ role:'user', content: document.getElementById('chat-input').value }] };
+      const r = await fetch('/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+      document.getElementById('chat-out').textContent = await r.text();
+    }
+    async function embed(){
+      const body = { text: document.getElementById('doc').value };
+      await fetch('/embed', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+    }
+    async function rag(){
+      const body = { text: document.getElementById('rag-q').value };
+      const r = await fetch('/rag', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+      document.getElementById('rag-out').textContent = await r.text();
+    }
+    async function runAgent(){
+      const body = { input: document.getElementById('run-input').value };
+      const r = await fetch('/run', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+      document.getElementById('run-out').textContent = await r.text();
+    }
+    async function calc(){
+      const body = { expression: document.getElementById('calc-expr').value };
+      const r = await fetch('/calc', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+      document.getElementById('calc-out').textContent = await r.text();
+    }
   </script>
 </body>
 </html>
