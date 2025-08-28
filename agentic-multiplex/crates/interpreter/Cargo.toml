@@ -1,0 +1,12 @@
+[package]
+name = "interpreter"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+thiserror = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+artifacts = { path = "../artifacts" }
+

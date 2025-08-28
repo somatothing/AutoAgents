@@ -1,0 +1,17 @@
+[package]
+name = "dl-adapter"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[features]
+rotta = ["dep:rotta_rs"]
+burn = []
+
+[dependencies]
+agent-core = { path = "../agent-core" }
+# Local paths to external repos; adjust if vendored differently
+rotta_rs = { path = "/workspace/external/ROTTA-rs", optional = true }
+serde = { version = "1", features = ["derive"] }
+thiserror = "1"
+

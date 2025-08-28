@@ -1,0 +1,16 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/agent-core",
+    "crates/dl-adapter",
+    "crates/artifacts",
+    "crates/interpreter",
+    "crates/canvas",
+    "crates/graphs",
+    "services/http-service"
+]
+
+[workspace.package]
+edition = "2024"
+version = "0.1.0"
+license = "Apache-2.0"
