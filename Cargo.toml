@@ -12,7 +12,7 @@ members = [
     "crates/llm",
     "crates/derive",
     "crates/test_utils",
-    "crates/liquid-edge",
+    "crates/liquid-edge", "crates/tools", "crates/embeddings", "crates/qwen-client",
 ]
 
 exclude = ["examples/wasm_tool"]

@@ -7,6 +7,9 @@ members = [
     "crates/interpreter",
     "crates/canvas",
     "crates/graphs",
+    "crates/tools",
+    "crates/embeddings",
+    "crates/qwen-client",
     "services/http-service"
 ]
 
