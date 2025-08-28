@@ -1,0 +1,10 @@
+[package]
+name = "canvas"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+artifacts = { path = "../artifacts" }
+serde = { version = "1", features = ["derive"] }
+

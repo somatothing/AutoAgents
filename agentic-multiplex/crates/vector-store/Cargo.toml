@@ -1,0 +1,10 @@
+[package]
+name = "vector-store"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+thiserror = "1"
+embeddings = { path = "../embeddings" }
