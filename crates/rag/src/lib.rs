@@ -11,6 +11,8 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use parking_lot::RwLock;
 
+pub mod analysis;
+
 #[derive(Debug, Clone)]
 pub struct VectorDoc {
     pub id: String,

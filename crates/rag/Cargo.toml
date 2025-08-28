@@ -17,4 +17,5 @@ thiserror.workspace = true
 parking_lot = "0.12"
 uuid = { version = "1.15", features = ["v4"] }
 itertools = "0.13"
+tokio-stream.workspace = true
 

@@ -16,6 +16,7 @@ use serde_json::Value;
 use std::sync::Arc;
 use tokio_stream::{wrappers::ReceiverStream, StreamExt};
 use autoagents_rag::{RagEngine, RagIndexTool, RagQueryTool};
+use autoagents_rag::analysis::{RagAnalysisCenter, spawn_listener};
 
 #[derive(Serialize, Deserialize, ToolInput, Debug)]
 pub struct AdditionArgs {
@@ -96,6 +97,9 @@ pub async fn simple_agent(llm: Arc<dyn LLMProvider>) -> Result<(), Error> {
     println!("Run method Result: {:?}", test);
 
     let receiver = environment.take_event_receiver(None).await?;
+    // Spawn RAG Analysis Center listener
+    let center = std::sync::Arc::new(RagAnalysisCenter::new(engine.clone()));
+    let _listener_handle = spawn_listener(receiver.clone(), center.clone());
     handle_events(receiver);
 
     // Index a small knowledge base then ask a question

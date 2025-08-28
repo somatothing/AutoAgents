@@ -108,6 +108,15 @@ pub enum Event {
     StreamComplete {
         sub_id: SubmissionId,
     },
+
+    /// Chat message persisted into memory for a given task
+    ChatMessageAppended {
+        sub_id: SubmissionId,
+        actor_id: ActorID,
+        role: String,
+        message_type: String,
+        content: String,
+    },
 }
 
 /// Internal events that are processed within the runtime
