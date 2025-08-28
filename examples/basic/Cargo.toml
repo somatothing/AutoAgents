@@ -17,3 +17,4 @@ async-trait = { workspace = true }
 tokio-stream.workspace = true
 colored = "3.0.0"
 uuid = { version = "1.17.0", features = ["v4"] }
+autoagents-rag = { path = "../../crates/rag" }

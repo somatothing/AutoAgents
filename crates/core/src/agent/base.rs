@@ -106,6 +106,8 @@ impl<T: AgentDeriveT> BaseAgent<T> {
             description: self.description().into(),
             id: self.id,
             output_schema: structured_schema,
+            sequential_thinking: false,
+            sub_context: None,
         }
     }
 

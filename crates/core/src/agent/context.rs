@@ -19,6 +19,7 @@ pub struct Context {
     state: Arc<RwLock<AgentState>>,
     tx: mpsc::Sender<Event>,
     stream: bool,
+    sub_context: Option<String>,
 }
 
 impl Context {
@@ -32,6 +33,7 @@ impl Context {
             state: Arc::new(RwLock::new(AgentState::new())),
             stream: false,
             tx,
+            sub_context: None,
         }
     }
 
@@ -71,6 +73,11 @@ impl Context {
         self
     }
 
+    pub fn with_sub_context(mut self, context: Option<String>) -> Self {
+        self.sub_context = context;
+        self
+    }
+
     // Getters
     pub fn llm(&self) -> Arc<dyn LLMProvider> {
         self.llm.clone()
@@ -102,6 +109,10 @@ impl Context {
 
     pub fn stream(&self) -> bool {
         self.stream
+    }
+
+    pub fn sub_context(&self) -> Option<String> {
+        self.sub_context.clone().or_else(|| self.config.sub_context.clone())
     }
 }
 

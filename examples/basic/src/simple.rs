@@ -15,6 +15,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::sync::Arc;
 use tokio_stream::{wrappers::ReceiverStream, StreamExt};
+use autoagents_rag::{RagEngine, RagIndexTool, RagQueryTool};
 
 #[derive(Serialize, Deserialize, ToolInput, Debug)]
 pub struct AdditionArgs {
@@ -52,7 +53,7 @@ pub struct MathAgentOutput {
 
 #[agent(
     name = "math_agent",
-    description = "You are a Math agent",
+    description = "You are a Math agent with retrieval capability. Use tools to index and retrieve context before answering.",
     tools = [Addition],
     output = MathAgentOutput
 )]
@@ -69,6 +70,12 @@ pub async fn simple_agent(llm: Arc<dyn LLMProvider>) -> Result<(), Error> {
     let runtime = SingleThreadedRuntime::new(None);
 
     let test_topic = Topic::<Task>::new("test");
+
+    // Build RAG tools bound to the LLM's embedding provider
+    let engine = Arc::new(RagEngine::new());
+    let embedder = llm.clone();
+    let rag_index: Box<dyn ToolT> = Box::new(RagIndexTool::new(engine.clone(), embedder.clone()));
+    let rag_query: Box<dyn ToolT> = Box::new(RagQueryTool::new(engine.clone(), embedder.clone()));
 
     let agent_handle = AgentBuilder::new(agent)
         .with_llm(llm)
@@ -90,6 +97,18 @@ pub async fn simple_agent(llm: Arc<dyn LLMProvider>) -> Result<(), Error> {
 
     let receiver = environment.take_event_receiver(None).await?;
     handle_events(receiver);
+
+    // Index a small knowledge base then ask a question
+    {
+        let _ = rag_index.run(serde_json::json!({
+            "namespace": "kb",
+            "documents": [
+                "The capital of France is Paris.",
+                "2 + 2 equals 4.",
+                "Rust is a systems programming language focused on safety and performance."
+            ]
+        }));
+    }
 
     // Publish message to all the subscribing actors
     runtime

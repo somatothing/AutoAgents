@@ -432,10 +432,21 @@ pub trait ReActExecutor: Send + Sync + Clone + 'static {
 
     /// Prepare messages for the current turn
     async fn prepare_messages(&self, context: &Context) -> Vec<ChatMessage> {
+        let mut system_prompt = context.config().description.clone();
+        if context.config().sequential_thinking {
+            system_prompt = format!(
+                "{}\n\nFollow a step-by-step plan: Thought -> Action (tool) -> Observation -> Answer. When helpful, list numbered steps before answering.",
+                system_prompt
+            );
+        }
+        if let Some(sub) = context.sub_context() {
+            system_prompt = format!("{}\n\nContext:\n{}", system_prompt, sub);
+        }
+
         let mut messages = vec![ChatMessage {
             role: ChatRole::System,
             message_type: MessageType::Text,
-            content: context.config().description.clone(),
+            content: system_prompt,
         }];
 
         if let Some(memory) = context.memory() {
@@ -551,10 +562,21 @@ impl<T: ReActExecutor> AgentExecutor for T {
             .map_err(ReActExecutorError::EventError)?;
 
         for _ in 0..max_turns {
+            let mut system_prompt = agent_config.description.clone();
+            if agent_config.sequential_thinking {
+                system_prompt = format!(
+                    "{}\n\nFollow a step-by-step plan: Thought -> Action (tool) -> Observation -> Answer. When helpful, list numbered steps before answering.",
+                    system_prompt
+                );
+            }
+            if let Some(sub) = context.sub_context() {
+                system_prompt = format!("{}\n\nContext:\n{}", system_prompt, sub);
+            }
+
             let mut messages = vec![ChatMessage {
                 role: ChatRole::System,
                 message_type: MessageType::Text,
-                content: agent_config.description.clone(),
+                content: system_prompt,
             }];
 
             if let Some(memory) = &memory {

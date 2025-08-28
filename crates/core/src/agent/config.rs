@@ -11,6 +11,10 @@ pub struct AgentConfig {
     pub id: ActorID,
     /// The output schema for the agent
     pub output_schema: Option<StructuredOutputFormat>,
+    /// Enables explicit step-by-step reasoning instructions
+    pub sequential_thinking: bool,
+    /// Optional sub-context to prepend before recalled memory (e.g., task-specific context)
+    pub sub_context: Option<String>,
 }
 
 impl AgentConfig {
@@ -20,11 +24,23 @@ impl AgentConfig {
             description,
             id: ActorID::new_v4(),
             output_schema: None,
+            sequential_thinking: false,
+            sub_context: None,
         }
     }
 
     pub fn with_output_schema(mut self, schema: StructuredOutputFormat) -> Self {
         self.output_schema = Some(schema);
+        self
+    }
+
+    pub fn with_sequential_thinking(mut self, enabled: bool) -> Self {
+        self.sequential_thinking = enabled;
+        self
+    }
+
+    pub fn with_sub_context(mut self, text: impl Into<String>) -> Self {
+        self.sub_context = Some(text.into());
         self
     }
 }
