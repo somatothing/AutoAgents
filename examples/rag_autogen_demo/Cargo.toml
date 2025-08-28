@@ -1,0 +1,12 @@
+[package]
+name = "rag_autogen_demo"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+autoagents = { path = "../../crates/autoagents" }
+autoagents-core = { path = "../../crates/core" }
+autoagents-llm = { path = "../../crates/llm" }
+tokio = { version = "1", features = ["full"] }
+serde_json = "1"
+

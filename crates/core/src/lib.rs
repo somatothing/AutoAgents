@@ -5,6 +5,7 @@ pub mod error;
 pub mod protocol;
 pub mod runtime;
 pub mod tool;
+pub mod rag;
 
 #[cfg(test)]
 mod tests;

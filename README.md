@@ -115,6 +115,13 @@ that other ML Models can be used to create complex pipelines using Actor Framewo
 - **Type Safe Pub/Sub**: Type Safe Rust Native Pub/Sub
 - **Knowledge Sharing**: Shared memory and context between agents (In Roadmap)
 
+### 📚 RAG, AutoGen, Avalanche, MCP
+
+- **RAG Analysis Tool**: `rag_analysis` ranks candidate passages by semantic similarity.
+- **AutoGen Orchestrator**: Prebuilt coordinator that plans and routes tool usage.
+- **Avalanche Orchestrator**: Fan-out multi-branch proposals with a merge step.
+- **MCP Tool (feature-gated)**: Stubbed `mcp_call` for Model Context Protocol integration.
+
 ---
 
 ## 🌐 Supported LLM Providers
@@ -325,6 +332,27 @@ fn handle_events(event_stream: Option<ReceiverStream<Event>>) {
         });
     }
 }
+```
+
+#### RAG Analysis Tool Example
+
+```rust
+use autoagents::core::tool::rag::RagAnalysisTool;
+let tool = RagAnalysisTool;
+let args = serde_json::json!({
+  "query": "What is Rust?",
+  "candidates": ["Rust is a systems language", "Python is dynamic"],
+  "top_k": 1
+});
+let out = tool.execute(args)?; // { results: [ { text, score } ] }
+```
+
+#### AutoGen and Avalanche Executors
+
+```rust
+use autoagents::core::agent::prebuilt::executor::{AutoGenExecutor, AvalancheExecutor};
+let autogen = AutoGenExecutor::new();
+let avalanche = AvalancheExecutor::new();
 ```
 
 ---
