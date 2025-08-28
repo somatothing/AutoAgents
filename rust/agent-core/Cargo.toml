@@ -1,0 +1,30 @@
+[package]
+name = "agent-core"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = []
+burn = ["dep:burn"]
+rotta = []
+
+[dependencies]
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+uuid = { workspace = true }
+futures = { workspace = true }
+async-trait = { workspace = true }
+reqwest = { workspace = true }
+
+# Burn backend (optional feature)
+burn = { version = "0.14", optional = true, default-features = true }
+
+# ROTTA-rs - use as a git dependency until crates.io is available
+# NOTE: Please verify the actual path and crate name in the repository.
+# This is a placeholder that can be toggled on by adding the feature.
+# rotta-rs = { git = "https://github.com/somatothing/ROTTA-rs", optional = true }
+

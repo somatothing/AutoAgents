@@ -1,3 +1,51 @@
+Agentic Multiplex Framework (Rust + Next.js + Python)
+
+Overview
+This monorepo provides an agentic multiplex framework with a deep-learning sequential reasoning core, modular memory, tools, artifacts, graph execution, and a web UI. It is designed to integrate multiple DL backends (Burn, ROTTA-rs) and target OpenAI-compatible models such as Qwen-Coder for contextual + tools capabilities. A Python LoRA fine-tuning pipeline is included.
+
+Structure
+- rust: Rust workspace
+  - agent-core: core agent library (planner, memory, tools, artifacts, graph, engines)
+  - agent-server: Axum server exposing HTTP/WebSocket APIs
+- ui: Next.js app (chat, planner view, memory, canvas/graph)
+- tuning: Python LoRA fine-tuning scripts for Qwen-Coder
+
+Quickstart
+1) Install toolchains
+   - Rust: curl -sSf https://sh.rustup.rs | sh -s -- -y
+   - Node: v18+ (v22 recommended)
+   - Python: 3.10+
+
+2) Rust build
+   - cd rust
+   - cargo check
+   - cargo run -p agent-server
+
+3) UI
+   - cd ui
+   - npm install
+   - npm run dev
+
+4) Tuning (example LoRA script)
+   - cd tuning
+   - python3 -m venv .venv && source .venv/bin/activate
+   - pip install -r requirements.txt
+   - python train_lora.py --model Qwen/Qwen2.5-Coder-7B --data ./data.jsonl
+
+Deep Learning Engines
+- Burn (feature: burn): next-gen Rust DL framework
+- ROTTA-rs (feature: rotta): alternative Rust DL backend
+Enable via features in rust/agent-core/Cargo.toml, e.g.:
+  cargo build -p agent-core --features burn
+
+APIs
+- POST /api/chat: run agent over a prompt
+- POST /api/plan: generate/inspect plan graph
+- WS  /ws: streaming tokens and events
+
+Disclaimer
+This is a scaffold designed to be extended. The Burn/ROTTa integrations are gated behind features and stubbed until backends are configured. Qwen client is OpenAI-compatible and should be configured via environment variables.
+
 <div align="center">
   <img src="assets/logo.png" alt="AutoAgents Logo" width="200" height="200">
 
